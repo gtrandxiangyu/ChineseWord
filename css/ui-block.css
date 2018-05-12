@@ -1,0 +1,231 @@
+
+/*
+    .footer
+    ============================================================
+    */
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.footer {
+    font-size: .8rem;
+    font-weight: 200;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    margin-top: auto;
+}
+
+.footer .copyright {
+    color: #b2b2b2;
+}
+
+.footer nav {
+    margin: 5px 0;
+}
+
+.footer a {
+    border-bottom: 1px solid transparent;
+    margin: 0 7px;
+    padding-bottom: 3px;
+}
+
+.footer a:hover {
+    border-color: #333;
+    transition: border-color .3s;
+}
+
+.footer .logo {
+    background: url(../img/logo-b.png) center / contain no-repeat;
+    height: 1.8rem;
+}
+
+/*
+    .header
+    ============================================================
+    */
+
+.header > div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header > div > a {
+    margin: 0 10px;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.header .checked {
+    border-bottom: 2px solid #000;
+}
+
+/*
+    .icon-address
+    ============================================================
+    */
+
+.icon-address {
+    position: relative;
+}
+
+.icon-address input {
+    padding-right: 40px;
+}
+
+/*
+    .logo-main
+    ============================================================
+    */
+
+.logo-main .btn {
+    font-size: smaller;
+    font-weight: lighter;
+}
+
+.logo-main .col:first-child {
+    background: url(../img/logo-b.png?x=1) left center no-repeat content-box;
+    height: 70px;
+    background-size: 80px;
+}
+
+.logo-main .col:last-child {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* overrides - base.css */
+.logo-main .col:last-child .btn {
+    background-color: white;
+    color: #aaa;
+    margin: 0 10px 0 0;
+    padding: 0;
+}
+
+/*
+    .number-comma
+    ============================================================
+    */
+
+.number-comma {
+    position: relative;
+}
+
+.number-comma > div {
+    color: #aaa;
+    font-size: .875rem;
+    line-height: 3em;
+    pointer-events: none;
+    position: absolute;
+    right: 3px;
+    top: 0;
+}
+
+/*
+    .select-wallet-file
+    ============================================================
+    */
+
+.select-wallet-file label.file {
+    background-color: #f5f5f5;
+    border-radius: 3px;
+    cursor: pointer;
+    display: block;
+    font-size: 19px;
+    font-weight: bold;
+    height: auto; /* override bootstrap */
+    line-height: 50px;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+.select-wallet-file .empty {
+    border: 1px solid red;
+}
+
+.select-wallet-file input[type=file] {
+    display: none;
+}
+
+.select-wallet-file label.pass {
+    display: block;
+}
+
+.select-wallet-file input[type=password] {
+    background-color: #f5f5f5;
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+    display: block;
+    height: 3em;
+    letter-spacing: .3em;
+    margin-top: 10px;
+    padding: 0 10px;
+    width: 100%;
+}
+
+.select-wallet-file label.hide {
+    display: none;
+}
+
+.select-wallet-file .comment {
+    font-size: .8rem;
+}
+
+/** wall **/
+.wall_head_title {
+    text-align: left;
+    font-size: 24px;
+    line-height: 70px;
+    text-indent: 90px;
+}
+.wall_head_nav {
+    font-size: 18px;
+    line-height: 74px;
+}
+.wall_head_nav a {
+    margin: 0px 15px;
+}
+.wall_content {
+    width: 100%;
+    height: 50px;
+    text-indent: 20px;
+    border: 1px black solid;
+}
+.wall_main {
+    width: 100%;
+    margin: 20px auto;
+}
+.next_show_button {}
+.next_area {
+    margin-top: 20px;
+}
+.next_area_hide {
+    display: none;
+}
+.hide {display: none !important;}
+.wall_qrcode {position: fixed;
+    right: 6px;
+    top: 80px;
+    padding: 10px;
+    border: 1px gray solid;
+    background-color: white;
+}
+.wall_qrcode_title {
+    line-height: 25px;
+    text-align: center;
+    width: 150px;
+    font-size: 14px;
+}
+.wall_qrcode_img {
+    width: 150px;
+    height: 150px;
+    margin: 0px auto;
+    display: block;
+    background: url(../img/nasscan_qrcode.jpeg) center / contain no-repeat;
+}

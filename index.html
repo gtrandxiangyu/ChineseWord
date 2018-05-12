@@ -1,0 +1,681 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="icon shortcut" href=img/logo.png type=image/png>
+    <link rel=apple-touch-icon href=img/logo.png>
+    <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+    <link rel=stylesheet href=lib/prismjs-1.13.0/prism.css>
+    <link rel=stylesheet href=css/base.css>
+    <link rel=stylesheet href=css/ui-block.css?x=1>
+    <link rel=stylesheet href=css/codemirror.css>
+    <meta name=viewport content="width=device-width">
+    <title>区块链中文数字转换工具</title>
+</head>
+<body>
+    <div class=container>
+        <div id=content>
+            <!-- search contract -->
+            <div class="run_contract show tab" id=tab3>
+                <div class=title>
+                    <span></span>
+                </div>
+                <div class="starter-template">
+                  <h1>区块链中文数字转换工具</h1>
+                </div>
+
+                    <body>
+                    <div id="demo" style="overflow:hidden;height:150px;color:#333">
+                        <div id="demo1">
+                          <table border="1" id="border">
+                          <h1>您可以将数字写在下面的框框里</h1>
+                          <h1>我们会自动存入中文数字到区块链中</h1>
+                          <h1>您每次登录都可以看到自己的中文数字，欢迎来玩！</h1>
+                          </table>
+                        </div>
+                        <div id="demo2"></div>
+                    </div>
+                       <script>
+                       var speed=10
+                       demo2.innerHTML=demo1.innerHTML
+                       function Marquee(){
+                         if(demo1.offsetHeight>demo2.offsetHeight)
+                         demo2.innerHTML=demo1.innerHTML
+                         if(demo2.offsetHeight-demo.scrollTop<=0)
+                         {
+                           demo.scrollTop-=demo1.offsetHeight
+                         }
+                         else{
+                         demo.scrollTop++
+                        }
+                       }
+                       var MyMar=setInterval(Marquee,speed)
+                       demo.onmouseover=function() {clearInterval(MyMar)}
+                       demo.onmouseout=function() {MyMar=setInterval(Marquee,speed)}
+                       </script>
+                    </body>
+
+
+                <div>
+                    <input class="wall_content" id="wall_content" placeholder="请写下数字，我们将为您转换成中文数字"></input>
+                </div>
+
+                <div class="form-group row">
+                    <div class=col>
+                        <button class="btn btn-block next_show_button" id="next_show_button">下一步</button>
+                    </div>
+                </div>
+
+
+                <div class="next_area next_area_hide">
+                    <div class=select-wallet-file></div>
+
+                    <div class="form-group row">
+                        <div class=col>
+                            <label data-i18n=send-nas/from-address></label>
+                            <div class=icon-address data-id=run_from_addr data-disabled></div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
+                        <div class=col>
+                            <label data-i18n=send-nas/balance></label>
+                            <input class=form-control disabled id=run_balance>
+                        </div>
+                        <div class=col>
+                            <label data-i18n=send-nas/amount></label>
+                            <input class=form-control id=run_value value=0 data-validate-order-matters="required number">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class=col>
+                            <label data-i18n=gas-limit></label>
+                            <input class=form-control type=text id=run_gas_limit value=200000>
+                        </div>
+                        <div class=col>
+                            <label data-i18n=gas-price></label>
+                            <i>( 1 NAS = 1EWei = 10
+                                <sup>18</sup> Wei )</i>
+                            <input class=form-control type=text id=run_gas_price>
+                        </div>
+                    </div>
+
+                    <div class="active1 result" id=result></div>
+
+                    <div class="form-group row">
+                        <div class=col>
+                            <button class="btn btn-block" data-i18n=contract/call_submit disabled id=call></button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="fade loading modal" data-backdrop=static>
+        <div class=modal-dialog>
+            <div class=modal-content>
+                <div class=modal-body>
+                    <div class=progress>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role=progressbar style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fade success modal" data-backdrop=static>
+        <div class=modal-dialog>
+            <div class=modal-content>
+                <div class=modal-body>
+                    恭喜你，你的数字已经转换为中文，并已上传区块链平台
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fade wordneed modal" data-backdrop=static>
+        <div class=modal-dialog>
+            <div class=modal-content>
+                <div class=modal-body>
+                    您还没有填写数字!!!
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src=lib/jquery-3.3.1.min.js></script>
+    <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
+    <script src=lib/blockies.min.js></script>
+    <script src=lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=lib/prismjs-1.13.0/prism.js></script>
+    <script src=lib/nebulas.js></script>
+    <script src=js/1-localSave.js></script>
+    <script src=js/home.v1.js></script>
+    <script src=js/i18n.js data-depends=jquery.slim></script>
+    <script src=js/ui-block.js?x=4 data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
+    <script src=lib/codemirror/codemirror.js></script>
+    <script src=lib/codemirror/javascript.js></script>
+    <script src=js/canvasBarrage.js></script>
+    <script src="js/auto-text.js"></script>
+
+    <script>
+        "use strict";
+        //Define ChineseWord
+        var ChineseWord
+        var nebulas = require("nebulas"),
+            Account = nebulas.Account,
+            Utils = nebulas.Utils,
+            neb = new nebulas.Neb(),
+            globalParams = {
+                account: null
+            },
+            validateTab2 = uiBlock.validate("#tab2"),
+            validateTab3 = uiBlock.validate("#tab3");
+
+        var WALL_ADDRESS = "n1kiNRDHVpS5CPoZe3eGvWSxPtN8twV19FL";//contract address
+
+        neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://mainnet.nebulas.io"));
+
+        uiBlock.insert({
+            footer: ".footer",
+            header: ".header",
+            iconAddress: ".icon-address",
+            logoMain: ".logo-main",
+            numberComma: ".number-comma",
+            selectWalletFile: [".select-wallet-file", onUnlockFile]
+        });
+
+
+
+        // prompt（function，args）
+        $("#prompt").mouseover(function(){
+            $("#prompt_contenner").removeClass("active1");
+        });
+
+        $("#prompt").mouseout(function(){
+            $("#prompt_contenner").addClass("active1");
+        });
+
+        $("#call_prompt").mouseover(function(){
+            $("#call_prompt_contenner").removeClass("active1");
+        });
+
+        $("#call_prompt").mouseout(function(){
+            $("#call_prompt_contenner").addClass("active1");
+        });
+
+         $("#function_prompt").mouseover(function(){
+            $("#function_prompt_contenner").removeClass("active1");
+        });
+
+        $("#function_prompt").mouseout(function(){
+            $("#function_prompt_contenner").addClass("active1");
+        });
+
+        $("#call").on("click", onClickCall);
+
+        function activeSubmit() {
+            $("#call").attr("disabled", false);
+        }
+
+
+
+        // 获取弹幕信息
+        function getAutoText() {
+            innerCall(function (params) {
+                neb.api
+                    .call({
+                        from: params.from,
+                        to: params.to,
+                        value: params.value,
+                        nonce: params.nonce,
+                        gasPrice: params.gasPrice,
+                        gasLimit: params.gasLimit,
+                        contract: params.contract
+                    })
+                    .then(function (resp) {
+                        showData(resp);
+                    })
+                    .catch(function (err) {
+                        $("#call_test_result").text(JSON.stringify(err));
+                        $("#call").attr("disabled", true);
+                        $("#call_result").text("");
+                        $(".next").removeClass("active1");
+                    });
+            });
+        }
+
+        // Show chinese digit
+        function onClickCall() {
+            $(".modal.loading").modal("show");
+            previousInnerCall(function (params) {
+                var gTx = new nebulas.Transaction(parseInt(localSave.getItem("chainId")),
+                    globalParams.account,
+                    params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
+                gTx.signTransaction();
+                neb.api
+                    .sendRawTransaction(gTx.toProtoString())
+                    .then(function (resp) {
+                      console.log(resp);
+                        $("#call_result").text(JSON.stringify(resp));
+                        $(".result").removeClass("active1");
+                        $(".next").removeClass("active1");
+                        $("#receipt_call").text(resp.txhash).prop("href", "check.html?" + resp.txhash);
+                        $(".modal.loading").modal("hide");
+                        $(".modal.success").modal("show");
+                        setTimeout(function() {
+                            $(".modal.success").modal("hide");
+                        },200);
+                    })
+                    .catch(function (err) {
+                      console.log("console.error();");
+                        $("#call_result").text(JSON.stringify(err));
+                        $(".result").removeClass("active1");
+                        $(".next").removeClass("active1");
+                        $(".modal.loading").modal("hide");
+                    });
+            });
+        }
+        // 解锁钱包文件
+        function onUnlockFile(swf, fileJson, account, password) {
+            var balance_nas, state,
+                fromAddr = account.getAddressString(),
+                $tab = $(swf).closest(".tab");
+
+            $(".modal.loading").modal("show");
+
+            if ($tab.prop("id") == "tab2") {
+                $("#from_addr").val(fromAddr).trigger("input");
+                $("#to_addr").val(account.getAddressString()).trigger("input");
+            } else if ($tab.prop("id") == "tab3")
+                $("#run_from_addr").val(fromAddr).trigger("input");
+
+            try {
+                account.fromKey(fileJson, password);
+                globalParams.account = account;
+                $("#unlock").hide();
+                $("#send").show();
+
+                neb.api.gasPrice()
+                    .then(function (resp) {
+                        $("#gas_price").val(resp.gas_price);
+                        $("#run_gas_price").val(resp.gas_price);
+
+                        return neb.api.getAccountState(fromAddr);
+                    })
+                    .then(function (resp) {
+                        var balance = nebulas.Unit.fromBasic(resp.balance, "nas");
+
+                        if ($tab.prop("id") == "tab2")
+                            $("#balance").val(balance + " NAS");
+                        else if ($tab.prop("id") == "tab3")
+                            $("#run_balance").val(balance + " NAS");
+
+                        $(".modal.loading").modal("hide");
+                        activeSubmit();
+                    })
+                    .catch(function (e) {
+                        // this catches e thrown by nebulas.js!neb
+
+                        bootbox.dialog({
+                            backdrop: true,
+                            onEscape: true,
+                            message: i18n.apiErrorToText(e.message),
+                            size: "large",
+                            title: "Error"
+                        });
+
+                        $(".modal.loading").modal("hide");
+                    });
+            } catch (e) {
+                // this catches e thrown by nebulas.js!account
+
+                bootbox.dialog({
+                    backdrop: true,
+                    onEscape: true,
+                    message: localSave.getItem("lang") == "en" ? e : "keystore 文件错误, 或者密码错误",
+                    size: "large",
+                    title: "Error"
+                });
+
+                $(".modal.loading").modal("hide");
+            }
+        }
+
+
+
+        function innerCall(callback, func) {
+            let params = {};
+
+            //设置一个默认地址
+            params.from  = localSave.getItem("initAddress");
+
+            // 合约地址
+            let toAddr = WALL_ADDRESS;
+
+            params.to = toAddr;
+
+
+            // prepare gasLimit
+            let gasLimit = Utils.toBigNumber(0);
+            console.log("innerCall gasLimit" + gasLimit);
+            try {
+                gasLimit = Utils.toBigNumber("200000");
+            } catch (err) {
+                console.log(err);
+            }
+            console.log("innerCall gasLimit" + gasLimit);
+            if (gasLimit.cmp(Utils.toBigNumber(0)) <= 0) {
+                $("#run_gas_limit").addClass("err");
+                setTimeout(function () {
+                    $("#run_gas_limit").removeClass("err");
+                }, 5000);
+                return;
+            }
+            params.gasLimit = gasLimit.toNumber();
+
+            // prepare gasPrice
+            let gasPrice = Utils.toBigNumber(0);
+            try {
+                gasPrice = Utils.toBigNumber("1000000");
+            } catch (err) {
+                console.log(err);
+            }
+            if (gasPrice.cmp(Utils.toBigNumber(0)) <= 0) {
+                $("#run_gas_price").addClass("err");
+                setTimeout(function () {
+                    $("#run_gas_price").removeClass("err");
+                }, 5000);
+                return;
+            }
+            params.gasPrice = gasPrice.toNumber();
+
+            // prepare value
+            let value = Utils.toBigNumber(0);
+            try {
+//                value = nebulas.Unit.toBasic(Utils.toBigNumber($("#run_value").val()), "nas");
+                value = nebulas.Unit.toBasic(Utils.toBigNumber(0), "nas");
+            } catch (err) {
+                console.log(err);
+            }
+            if (value.cmp(Utils.toBigNumber(0)) < 0) {
+                // TODO 添加提示value输入不对
+                console.log("invalid value");
+                return;
+            }
+            params.value = value;
+            params.contract = {
+                "function": func || "list",
+                "args": ""
+            };
+
+            // prepare nonce
+            neb.api.getAccountState(params.from).then(function (resp) {
+                //获取nonce的值+1
+                params.nonce = parseInt(resp.nonce) + 1;
+                //回调方法
+                callback(params);
+            }).catch(function (err) {
+                bootbox.dialog({
+                    backdrop: true,
+                    onEscape: true,
+                    message: i18n.apiErrorToText(err.message),
+                    size: "large",
+                    title: "Error"
+                });
+            });
+        }
+
+        function previousInnerCall(callback) {
+            let params = {};
+            if (!globalParams.account) {
+                // TODO 提示钱包信息不正确
+                return;
+            }
+            params.from = globalParams.account.getAddressString();
+
+            // prepare to
+            let toAddr = WALL_ADDRESS;
+
+            params.to = toAddr;
+
+            // prepare gasLimit
+            let gasLimit = Utils.toBigNumber(0);
+            try {
+                gasLimit = Utils.toBigNumber($("#run_gas_limit").val());
+            } catch (err) {
+                console.log(err);
+            }
+            if (gasLimit.cmp(Utils.toBigNumber(0)) <= 0) {
+                $("#run_gas_limit").addClass("err");
+                setTimeout(function () {
+                    $("#run_gas_limit").removeClass("err");
+                }, 5000);
+                return;
+            }
+            params.gasLimit = gasLimit.toNumber();
+
+            // prepare gasPrice
+            let gasPrice = Utils.toBigNumber(0);
+            try {
+                gasPrice = Utils.toBigNumber($("#run_gas_price").val());
+            } catch (err) {
+                console.log(err);
+            }
+            if (gasPrice.cmp(Utils.toBigNumber(0)) <= 0) {
+                $("#run_gas_price").addClass("err");
+                setTimeout(function () {
+                    $("#run_gas_price").removeClass("err");
+                }, 5000);
+                return;
+            }
+            params.gasPrice = gasPrice.toNumber();
+
+            // prepare value
+            let value = Utils.toBigNumber(0);
+            try {
+                value = nebulas.Unit.toBasic(Utils.toBigNumber($("#run_value").val()), "nas");
+            } catch (err) {
+                console.log(err);
+            }
+            if (value.cmp(Utils.toBigNumber(0)) < 0) {
+                // TODO 添加提示value输入不对
+                console.log("invalid value");
+                return;
+            }
+            params.value = value;
+
+
+            // set content to args
+            var arr = [];
+            var content = $("#wall_content").val().trim();
+            if (content.length == 0) {
+                alert("大虾，写点东西呗！");
+                $(".modal.loading").modal("hide");
+                return false;
+            }
+            arr.push(ChineseWord);
+            arr.push(new Date());
+            params.contract = {
+                "function": "save",
+                "args": JSON.stringify(arr)
+            };
+            // prepare nonce
+            neb.api.getAccountState(params.from).then(function (resp) {
+                var balance = nebulas.Unit.fromBasic(resp.balance, "nas");
+                params.nonce = parseInt(resp.nonce) + 1;
+                $("#run_balance").val(balance + " NAS");
+                callback(params);
+            }).catch(function (err) {
+                // console.log("prepare nonce error: " + err);
+                bootbox.dialog({
+                    backdrop: true,
+                    onEscape: true,
+                    message: i18n.apiErrorToText(err.message),
+                    size: "large",
+                    title: "Error"
+                });
+            });
+        }
+
+        // next area show
+        $(document).ready(function() {
+            getAutoText();
+
+            $("#next_show_button").bind("click", function() {
+
+                var content = $("#wall_content").val().trim();
+
+                ChineseWord = changeNumMoneyToChinese(content);
+                console.log("ChineseWord="+ChineseWord)
+                AddDataToListById('border',ChineseWord)
+                console.log("ChineseWord done")
+
+                ///
+                if (content.length == 0) {
+                    $(".modal.wordneed").modal("show");
+
+                    setTimeout(function() {
+                        $(".modal.wordneed").modal("hide");
+                    }, 2000);
+                    return false;
+                } else if (content.length > 100) {
+                    alert("大侠，内容有点长啊，当文章写可不行~~");
+                } else {
+                    $(".next_area").removeClass("next_area_hide");
+                    $("#next_show_button").addClass("hide");
+                }
+            });
+        });
+
+        function AddData(data) {
+          //var row = document.createElement('tr'); //创建行
+          var row = document.createElement('h1'); //创建行
+          //var idCell = document.createElement('h1'); //创建第一列id
+          row.innerHTML = data; //填充数据
+          //row.appendChild(idCell); //加入行  ，下面类似
+          return row; //返回tr数据
+        }
+
+        function AddDataToListById(id,data) {
+          var tbody = document.getElementById(id);
+          console.log("content="+content)
+          var trow = AddData(data)
+          tbody.appendChild(trow);
+        }
+
+        function DataListReset(id) {
+          var tbody = document.getElementById(id);
+          console.log("content="+content)
+          var trow = AddData(data)
+          tbody.appendChild(trow);
+        }
+
+        function showData(data) {
+            var res = data.result;
+            var number = 10;
+            if (res) {
+                var arr = [];
+                res = JSON.parse(res);
+                if (res.length > number) {
+                    res = res.slice(res.length - number, res.length);
+                }
+
+                for (var key in res) {
+                    var obj = res[key];
+                    arr.push(obj.words);
+                    AddDataToListById('border',obj.words)
+                }
+            }
+        }
+
+        function changeNumMoneyToChinese(money) {
+            var cnNums = new Array("零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"); //汉字的数字
+            var cnIntRadice = new Array("", "拾", "佰", "仟"); //基本单位
+            var cnIntUnits = new Array("", "万", "亿", "兆"); //对应整数部分扩展单位
+            var cnDecUnits = new Array("角", "分", "毫", "厘"); //对应小数部分单位
+            var cnInteger = "整"; //整数金额时后面跟的字符
+            var cnIntLast = "元"; //整型完以后的单位
+            var maxNum = 999999999999999.9999; //最大处理的数字
+            var IntegerNum; //金额整数部分
+            var DecimalNum; //金额小数部分
+            var ChineseStr = ""; //输出的中文金额字符串
+            var parts; //分离金额后用的数组，预定义
+            if (money == "") {
+                return "";
+            }
+            money = parseFloat(money);
+            if (money >= maxNum) {
+                alert('超出最大处理数字');
+                return "";
+            }
+            if (money == 0) {
+                ChineseStr = cnNums[0] + cnIntLast + cnInteger;
+                return ChineseStr;
+            }
+            money = money.toString(); //转换为字符串
+            if (money.indexOf(".") == -1) {
+                IntegerNum = money;
+                DecimalNum = '';
+            } else {
+                parts = money.split(".");
+                IntegerNum = parts[0];
+                DecimalNum = parts[1].substr(0, 4);
+            }
+            if (parseInt(IntegerNum, 10) > 0) { //获取整型部分转换
+                var zeroCount = 0;
+                var IntLen = IntegerNum.length;
+                for (var i = 0; i < IntLen; i++) {
+                    var n = IntegerNum.substr(i, 1);
+                    var p = IntLen - i - 1;
+                    var q = p / 4;
+                    var m = p % 4;
+                    if (n == "0") {
+                        zeroCount++;
+                    } else {
+                        if (zeroCount > 0) {
+                            ChineseStr += cnNums[0];
+                        }
+                        zeroCount = 0; //归零
+                        ChineseStr += cnNums[parseInt(n)] + cnIntRadice[m];
+                    }
+                    if (m == 0 && zeroCount < 4) {
+                        ChineseStr += cnIntUnits[q];
+                    }
+                }
+                ChineseStr += cnIntLast;
+                //整型部分处理完毕
+            }
+            if (DecimalNum != '') { //小数部分
+                var decLen = DecimalNum.length;
+                for (var i = 0; i < decLen; i++) {
+                    var n = DecimalNum.substr(i, 1);
+                    if (n != '0') {
+                        ChineseStr += cnNums[Number(n)] + cnDecUnits[i];
+                    }
+                }
+            }
+            if (ChineseStr == '') {
+                ChineseStr += cnNums[0] + cnIntLast + cnInteger;
+            } else if (DecimalNum == '') {
+                ChineseStr += cnInteger;
+            }
+            return ChineseStr;
+
+        }
+    </script>
+</body>
+</html>
