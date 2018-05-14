@@ -70,7 +70,7 @@
                 </div>
 
 
-                <div class="next_area next_area_hide">
+                <!--div class="next_area next_area_hide">
                     <div class=select-wallet-file></div>
 
                     <div class="form-group row">
@@ -113,7 +113,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div-->
 
 
 
@@ -170,6 +170,7 @@
     <script src=lib/codemirror/javascript.js></script>
     <script src=js/canvasBarrage.js></script>
     <script src="js/auto-text.js"></script>
+    <script src=lib/nebPay.js></script>
 
     <script>
         "use strict";
@@ -225,7 +226,7 @@
             $("#function_prompt_contenner").addClass("active1");
         });
 
-        $("#call").on("click", onClickCall);
+        //$("#call").on("click", onClickCall);
 
         function activeSubmit() {
             $("#call").attr("disabled", false);
@@ -507,12 +508,16 @@
                 $(".modal.loading").modal("hide");
                 return false;
             }
+            //contract by previous
+
             arr.push(ChineseWord);
             arr.push(new Date());
             params.contract = {
                 "function": "save",
                 "args": JSON.stringify(arr)
             };
+
+
             // prepare nonce
             neb.api.getAccountState(params.from).then(function (resp) {
                 var balance = nebulas.Unit.fromBasic(resp.balance, "nas");
@@ -544,6 +549,10 @@
                 AddDataToListById('border',ChineseWord)
                 console.log("ChineseWord done")
 
+                var arr = [];
+                arr.push(ChineseWord);
+                arr.push(new Date());
+                AddDataToBL(WALL_ADDRESS,0,"save",JSON.stringify(arr))
                 ///
                 if (content.length == 0) {
                     $(".modal.wordneed").modal("show");
@@ -675,6 +684,48 @@
             }
             return ChineseStr;
 
+        }
+
+        var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+        var nebPay = new NebPay();
+        var serialNumber
+
+        function AddDataToBL(to,value,callFunction,callArgs) {
+            //defaultValue
+            /*
+            var to = dappAddress;
+            var value = "0";
+            var callFunction = "save"
+            var callArgs = "[\"" + $("#search_value").val() + "\",\"" + $("#add_value").val() + "\"]"
+            */
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: cbPush        //设置listener, 处理交易返回信息
+            });
+
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 5000);
+        }
+
+        var intervalQuery
+
+        function funcIntervalQuery() {
+            nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
+                .then(function (resp) {
+                    console.log("tx result: " + resp)   //resp is a JSON string
+                    var respObject = JSON.parse(resp)
+                    if(respObject.code === 0){
+                        alert(`set ${$("#search_value").val()} succeed!`)
+                        clearInterval(intervalQuery)
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+
+        function cbPush(resp) {
+            console.log("response of push: " + JSON.stringify(resp))
         }
     </script>
 </body>
